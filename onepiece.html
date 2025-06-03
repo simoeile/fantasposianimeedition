@@ -6,16 +6,16 @@
   <style>
     body { font-family: 'Comic Sans MS', cursive; text-align: center; background-color: white; }
     h1 { color: #008080; }
-    .media-container {{ margin: 20px auto; max-width: 600px; }}
-    video, img {{ max-width: 100%; margin-top: 10px; }}
-    form, .home-button {{
+    .media-container { margin: 20px auto; max-width: 600px; }
+    video, img { max-width: 100%; margin-top: 10px; }
+    form, .home-button {
       margin: 20px auto; padding: 10px; border: 2px solid #008080;
       border-radius: 10px; width: 90%; max-width: 500px;
-    }}
-    input, textarea, select, button {{
+    }
+    input, textarea, select, button {
       margin: 10px 0; padding: 8px; width: 90%; border-radius: 5px;
-    }}
-    .admin-btn {{ color: red; cursor: pointer; font-weight: bold; }}
+    }
+    .admin-btn { color: red; cursor: pointer; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -42,14 +42,14 @@
 
     let mediaData = JSON.parse(localStorage.getItem(teamKey)) || [];
 
-    function salvaDati() {{
+    function salvaDati() {
       localStorage.setItem(teamKey, JSON.stringify(mediaData));
-    }}
+    }
 
-    function mostraMedia() {{
+    function mostraMedia() {
       const gallery = document.getElementById("mediaGallery");
       gallery.innerHTML = "";
-      mediaData.forEach((item, index) => {{
+      mediaData.forEach((item, index) => {
         const div = document.createElement("div");
         div.innerHTML = `
           ${item.type.startsWith("image") ?
@@ -61,35 +61,34 @@
           <button onclick="cancella(${index})" class="admin-btn">🗑️ Cancella</button>
           <hr>`;
         gallery.appendChild(div);
-      }});
-    }}
+      });
+    }
 
-    function cancella(index) {{
+    function cancella(index) {
       const pass = prompt("Password admin per cancellare:");
-      if (pass === "admin123") {{
+      if (pass === "admin123") {
         mediaData.splice(index, 1);
         salvaDati();
         mostraMedia();
-      }} else {{
+      }} else {
         alert("Password errata!");
-      }}
-    }}
-
-    function modificaPunteggio(index) {{
+      }
+    
+    function modificaPunteggio(index) {
       const pass = prompt("Password admin per modificare:");
-      if (pass === "admin123") {{
+      if (pass === "admin123") {
         const nuovo = prompt("Inserisci nuovo punteggio:");
-        if (nuovo !== null && !isNaN(nuovo)) {{
+        if (nuovo !== null && !isNaN(nuovo)) {
           mediaData[index].punteggio = parseInt(nuovo);
           salvaDati();
           mostraMedia();
         }}
-      }} else {{
+      } else {
         alert("Password errata!");
-      }}
-    }}
+      }
+  
 
-    document.getElementById("uploadForm").addEventListener("submit", function(e) {{
+    document.getElementById("uploadForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const file = document.getElementById("mediaFile").files[0];
       const descrizione = document.getElementById("descrizione").value;
@@ -97,15 +96,15 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function(evt) {{
+      reader.onload = function(evt) {
         const fileData = evt.target.result;
         const xhr = new XMLHttpRequest();
         const filename = Date.now() + "_" + file.name;
         xhr.open("PUT", remotePath + filename);
         xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-        xhr.onload = function() {{
-          if (xhr.status >= 200 && xhr.status < 300) {{
-            const nuovoMedia = {{
+        xhr.onload = function() {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const nuovoMedia = {
               type: file.type,
               url: remotePath + filename,
               descrizione,
@@ -115,14 +114,14 @@
             salvaDati();
             mostraMedia();
             document.getElementById("uploadForm").reset();
-          }} else {{
+          }} else {
             alert("Errore durante l'upload: " + xhr.statusText);
-          }}
-        }};
+          }
+        };
         xhr.send(file);
-      }};
+      
       reader.readAsArrayBuffer(file);
-    }});
+    
 
     mostraMedia();
   </script>
