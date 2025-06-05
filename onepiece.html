@@ -1,25 +1,49 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Onepiece - Fanta Sposi</title>
+  <title>One Piece - Fanta Sposi</title>
   <style>
-    body { font-family: 'Comic Sans MS', cursive; text-align: center; background-color: white; }
-    h1 { color: #008080; }
-    .media-container { margin: 20px auto; max-width: 600px; }
-    video, img { max-width: 100%; margin-top: 10px; }
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      background-color: white;
+    }
+    h1 {
+      color: #008080;
+    }
+    .media-container {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    video, img {
+      max-width: 100%;
+      margin-top: 10px;
+    }
     form, .home-button {
-      margin: 20px auto; padding: 10px; border: 2px solid #008080;
-      border-radius: 10px; width: 90%; max-width: 500px;
+      margin: 20px auto;
+      padding: 10px;
+      border: 2px solid #008080;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
     }
     input, textarea, select, button {
-      margin: 10px 0; padding: 8px; width: 90%; border-radius: 5px;
+      margin: 10px 0;
+      padding: 8px;
+      width: 90%;
+      border-radius: 5px;
     }
-    .admin-btn { color: red; cursor: pointer; font-weight: bold; }
+    .admin-btn {
+      color: red;
+      cursor: pointer;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Onepiece</h1>
+  <h1>One Piece</h1>
 
   <div class="home-button">
     <button onclick="window.location.href='index.html'">🏠 Torna alla Home</button>
@@ -35,11 +59,7 @@
   <div id="mediaGallery" class="media-container"></div>
 
   <script>
-    const username = "simone";
-    const password = "Ch@rger01!";
-    const remotePath = "https://storage.fantasposianimeedition.it/remote.php/dav/files/simone";
     const teamKey = "onepieceMedia";
-
     let mediaData = JSON.parse(localStorage.getItem(teamKey)) || [];
 
     function salvaDati() {
@@ -52,14 +72,15 @@
       mediaData.forEach((item, index) => {
         const div = document.createElement("div");
         div.innerHTML = `
-          ${item.type.startsWith("image") ?
-            `<img src="${item.url}">` :
+          ${item.type.startsWith("image") ? 
+            `<img src="${item.url}">` : 
             `<video src="${item.url}" controls></video>`}
           <p><strong>Descrizione:</strong> ${item.descrizione}</p>
           <p><strong>Punteggio:</strong> ${item.punteggio}</p>
           <button onclick="modificaPunteggio(${index})">✏️ Modifica punteggio</button>
           <button onclick="cancella(${index})" class="admin-btn">🗑️ Cancella</button>
-          <hr>`;
+          <hr>
+        `;
         gallery.appendChild(div);
       });
     }
@@ -70,10 +91,11 @@
         mediaData.splice(index, 1);
         salvaDati();
         mostraMedia();
-      }} else {
+      } else {
         alert("Password errata!");
       }
-    
+    }
+
     function modificaPunteggio(index) {
       const pass = prompt("Password admin per modificare:");
       if (pass === "admin123") {
@@ -82,11 +104,11 @@
           mediaData[index].punteggio = parseInt(nuovo);
           salvaDati();
           mostraMedia();
-        }}
+        }
       } else {
         alert("Password errata!");
       }
-  
+    }
 
     document.getElementById("uploadForm").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -97,31 +119,19 @@
 
       const reader = new FileReader();
       reader.onload = function(evt) {
-        const fileData = evt.target.result;
-        const xhr = new XMLHttpRequest();
-        const filename = Date.now() + "_" + file.name;
-        xhr.open("PUT", remotePath + filename);
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-        xhr.onload = function() {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            const nuovoMedia = {
-              type: file.type,
-              url: remotePath + filename,
-              descrizione,
-              punteggio
-            }};
-            mediaData.push(nuovoMedia);
-            salvaDati();
-            mostraMedia();
-            document.getElementById("uploadForm").reset();
-          }} else {
-            alert("Errore durante l'upload: " + xhr.statusText);
-          }
+        const nuovoMedia = {
+          type: file.type,
+          url: evt.target.result,
+          descrizione,
+          punteggio
         };
-        xhr.send(file);
-      
-      reader.readAsArrayBuffer(file);
-    
+        mediaData.push(nuovoMedia);
+        salvaDati();
+        mostraMedia();
+        document.getElementById("uploadForm").reset();
+      };
+      reader.readAsDataURL(file);
+    });
 
     mostraMedia();
   </script>
