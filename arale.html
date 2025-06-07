@@ -96,7 +96,7 @@
       formData.append("descrizione", descrizione);
       formData.append("punteggio", punteggio);
 
-      fetch("upload.php", {
+      fetch("/upload.php", {
         method: "POST",
         body: formData
       })
