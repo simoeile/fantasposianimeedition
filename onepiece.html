@@ -35,11 +35,8 @@
   <div id="mediaGallery" class="media-container"></div>
 
   <script>
-    const remotePath = "https://storage.fantasposianimeedition.it/remote.php/dav/files/simone"; // 🔗 <-- LINK REMOTO
     const teamKey = "onepieceMedia";
     let mediaData = JSON.parse(localStorage.getItem(teamKey)) || [];
-    let username = "";
-    let password = "";
 
     function salvaDati() {
       localStorage.setItem(teamKey, JSON.stringify(mediaData));
@@ -90,46 +87,32 @@
 
     document.getElementById("uploadForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      if (!username || !password) {
-        username = prompt("Inserisci nome utente WebDAV:");
-        password = prompt("Inserisci password WebDAV:");
-      }
-
       const file = document.getElementById("mediaFile").files[0];
       const descrizione = document.getElementById("descrizione").value;
       const punteggio = parseInt(document.getElementById("punteggio").value) || 0;
-      if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const fileData = evt.target.result;
-        const xhr = new XMLHttpRequest();
-        const filename = Date.now() + "_" + file.name;
+      const formData = new FormData();
+      formData.append("media", file);
+      formData.append("descrizione", descrizione);
+      formData.append("punteggio", punteggio);
 
-        xhr.open("PUT", remotePath + "/" + filename, true);
-        xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-        xhr.setRequestHeader("Content-Type", file.type);
-
-        xhr.onload = function() {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            const nuovoMedia = {
-              type: file.type,
-              url: remotePath + "/" + filename,
-              descrizione,
-              punteggio
-            };
-            mediaData.push(nuovoMedia);
-            salvaDati();
-            mostraMedia();
-            aggiornaClassificaGlobale();
-            document.getElementById("uploadForm").reset();
-          } else {
-            alert("Errore durante l'upload: " + xhr.statusText);
-          }
-        };
-        xhr.send(fileData);
-      };
-      reader.readAsArrayBuffer(file);
+      fetch("upload.php", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert("Errore: " + data.error);
+        } else {
+          mediaData.push(data);
+          salvaDati();
+          mostraMedia();
+          aggiornaClassificaGlobale();
+          document.getElementById("uploadForm").reset();
+        }
+      })
+      .catch(err => alert("Errore di rete: " + err));
     });
 
     function aggiornaClassificaGlobale() {
