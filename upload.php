@@ -1,26 +1,47 @@
 <?php
-$target_dir = "uploads/";
-$target_file = $target_dir . basename($_FILES["media"]["name"]);
-$uploadOk = 1;
-$fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+// Configurazione credenziali WebDAV (nascoste nel server)
+$username = "simone";
+$password = "Ch@rger01!";
+$remoteBase = "https://storage.fantasposianimeedition.it/remote.php/dav/files/simone/";
 
-// Controlla se il file è un'immagine o un video reale
-if(isset($_POST["submit"])) {
-  $check = getimagesize($_FILES["media"]["tmp_name"]);
-  if($check !== false) {
-    $uploadOk = 1;
-  } else {
-    $uploadOk = 1; // Permetti anche i video
-  }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_FILES['media']) || !isset($_POST['descrizione']) || !isset($_POST['punteggio'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Dati incompleti."]);
+        exit;
+    }
+
+    $file = $_FILES['media'];
+    $descrizione = $_POST['descrizione'];
+    $punteggio = intval($_POST['punteggio']);
+    $filename = time() . "_" . basename($file['name']);
+    $url = $remoteBase . $filename;
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+    curl_setopt($ch, CURLOPT_PUT, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_INFILE, fopen($file['tmp_name'], 'r'));
+    curl_setopt($ch, CURLOPT_INFILESIZE, filesize($file['tmp_name']));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: " . $file['type']]);
+
+    $response = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($status >= 200 && $status < 300) {
+        echo json_encode([
+            "type" => $file['type'],
+            "url" => $url,
+            "descrizione" => $descrizione,
+            "punteggio" => $punteggio
+        ]);
+    } else {
+        http_response_code($status);
+        echo json_encode(["error" => "Errore upload WebDAV ($status)"]);
+    }
+} else {
+    http_response_code(405);
+    echo "Metodo non consentito";
 }
-
-// Controlla se il file esiste già
-if (file_exists($target_file)) {
-  echo "Spiacente, il file esiste già.";
-  $uploadOk = 0;
-}
-
-
- 
-::contentReference[oaicite:19]{index=19}
- 
+?>
