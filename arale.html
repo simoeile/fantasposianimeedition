@@ -26,7 +26,7 @@
   </div>
 
   <form id="uploadForm">
-    <input type="file" id="mediaFile" accept="image/*,video/*" required><br>
+    <input type="file" id="mediaFile" accept="image/,video/" required><br>
     <textarea id="descrizione" placeholder="Scrivi una descrizione"></textarea><br>
     <input type="number" id="punteggio" placeholder="Punteggio ottenuto" min="0"><br>
     <button type="submit">Carica</button>
@@ -48,7 +48,7 @@
       mediaData.forEach((item, index) => {
         const div = document.createElement("div");
         div.innerHTML = `
-          ${item.type.startsWith("image") ? `<img src="${item.url}">` : `<video src="${item.url}" controls></video>`}
+          ${item.type.startsWith("image") ? <img src="${item.url}"> : <video src="${item.url}" controls></video>}
           <p><strong>Descrizione:</strong> ${item.descrizione}</p>
           <p><strong>Punteggio:</strong> ${item.punteggio}</p>
           <button onclick="modificaPunteggio(${index})">✏️ Modifica punteggio</button>
@@ -87,6 +87,7 @@
 
     document.getElementById("uploadForm").addEventListener("submit", function(e) {
       e.preventDefault();
+
       const file = document.getElementById("mediaFile").files[0];
       const descrizione = document.getElementById("descrizione").value;
       const punteggio = parseInt(document.getElementById("punteggio").value) || 0;
@@ -96,6 +97,7 @@
       formData.append("descrizione", descrizione);
       formData.append("punteggio", punteggio);
 
+      // ✅ Usa percorso assoluto per Aruba
       fetch("/upload.php", {
         method: "POST",
         body: formData
@@ -105,19 +107,24 @@
         if (data.error) {
           alert("Errore: " + data.error);
         } else {
-          mediaData.push(data);
+          mediaData.push({
+            url: data.url,
+            type: data.type,
+            descrizione: descrizione,
+            punteggio: punteggio
+          });
           salvaDati();
           mostraMedia();
           aggiornaClassificaGlobale();
           document.getElementById("uploadForm").reset();
         }
       })
-      .catch(err => alert("Errore di rete: " + err));
+      .catch(err => alert("Errore di rete: " + err.message));
     });
 
     function aggiornaClassificaGlobale() {
-      const stored = localStorage.getItem("araleMedia");
-      localStorage.setItem("araleMedia", stored);
+      // In un sistema futuro puoi copiare i dati su una classifica unica
+      localStorage.setItem(teamKey, JSON.stringify(mediaData));
     }
 
     mostraMedia();
