@@ -12,7 +12,7 @@
     }
 
     header {
-      background-image: url('Logo SI - senza sfondo.png'); /* Personalizza con la tua immagine */
+      background-image: url('Logo SI - senza sfondo.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -93,7 +93,7 @@
     }
 
     footer {
-      background-image: url('Logo SI - senza sfondo.png'); /* Personalizza con la tua immagine */
+      background-image: url('Logo SI - senza sfondo.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -132,17 +132,16 @@
     </section>
 
     <section id="classifica">
-  <h2>Classifica</h2>
-  <table id="scoreTable" style="margin: auto; border-collapse: collapse;">
-    <thead>
-      <tr>
-        <th style="padding: 10px; border: 1px solid #ccc;">Squadra</th>
-        <th style="padding: 10px; border: 1px solid #ccc;">Punteggio</th>
-      </tr>
-    </thead>
-    <tbody id="scoreBody">
-      <!-- Riempito da JavaScript -->
-    </tbody>
+      <h2>Classifica</h2>
+      <table id="scoreTable" style="margin: auto; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>Squadra</th>
+            <th>Punteggio</th>
+          </tr>
+        </thead>
+        <tbody id="scoreBody">
+        </tbody>
       </table>
     </section>
   </div>
@@ -153,37 +152,36 @@
     function openTeam(page) {
       window.location.href = page;
     }
+
+    const teams = [
+      { name: 'One Piece', key: 'onepieceMedia' },
+      { name: 'Arale', key: 'araleMedia' },
+      { name: 'Naruto', key: 'narutoMedia' },
+      { name: 'Dragon Ball Z', key: 'dragonballzMedia' },
+      { name: 'Detective Conan', key: 'detectiveconanMedia' },
+      { name: 'Holly e Benji', key: 'hollyebenjiMedia' },
+      { name: 'Ken il Guerriero', key: 'kenilguerrieroMedia' },
+      { name: 'Yu Yu Hakusho', key: 'yuyuhakushoMedia' },
+    ];
+
+    function aggiornaClassifica() {
+      const tbody = document.getElementById("scoreBody");
+      tbody.innerHTML = "";
+
+      teams.forEach(team => {
+        const data = JSON.parse(localStorage.getItem(team.key)) || [];
+        const totale = data.reduce((acc, cur) => acc + (parseInt(cur.punteggio) || 0), 0);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${team.name}</td>
+          <td>${totale}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    aggiornaClassifica();
   </script>
-<script>
-  const teams = [
-    { name: 'One Piece', key: 'onepieceMedia' },
-    { name: 'Arale', key: 'araleMedia' },
-    { name: 'Naruto', key: 'narutoMedia' },
-    { name: 'Dragon Ball Z', key: 'dragonballzMedia' },
-    { name: 'Detective Conan', key: 'detectiveconanMedia' },
-    { name: 'Holly e Benji', key: 'hollyebenjiMedia' },
-    { name: 'Ken il Guerriero', key: 'kenilguerrieroMedia' },
-    { name: 'Yu Yu Hakusho', key: 'yuyuhakushoMedia' },
-  ];
-
-  function aggiornaClassifica() {
-    const tbody = document.getElementById("scoreBody");
-    tbody.innerHTML = "";
-
-    teams.forEach(team => {
-      const data = JSON.parse(localStorage.getItem(team.key)) || [];
-      const totale = data.reduce((acc, cur) => acc + (parseInt(cur.punteggio) || 0), 0);
-
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td style="padding: 10px; border: 1px solid #ccc;">${team.name}</td>
-        <td style="padding: 10px; border: 1px solid #ccc;">${totale}</td>
-      `;
-      tbody.appendChild(row);
-    });
-  }
-
-  aggiornaClassifica();
-</script>
 </body>
 </html>
