@@ -34,93 +34,61 @@
 
   <div id="mediaGallery" class="media-container"></div>
 
-  <script>
-    const teamKey = "onepieceMedia";
-    let mediaData = JSON.parse(localStorage.getItem(teamKey)) || [];
+<script>
+  const teamKey = "onepiece";
 
-    function salvaDati() {
-      localStorage.setItem(teamKey, JSON.stringify(mediaData));
-    }
-
-    function mostraMedia() {
-      const gallery = document.getElementById("mediaGallery");
-      gallery.innerHTML = "";
-      mediaData.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          ${item.type.startsWith("image") ? `<img src="${item.url}">` : `<video src="${item.url}" controls></video>`}
-          <p><strong>Descrizione:</strong> ${item.descrizione}</p>
-          <p><strong>Punteggio:</strong> ${item.punteggio}</p>
-          <button onclick="modificaPunteggio(${index})">✏️ Modifica punteggio</button>
-          <button onclick="cancella(${index})" class="admin-btn">🗑️ Cancella</button>
-          <hr>`;
-        gallery.appendChild(div);
-      });
-    }
-
-    function cancella(index) {
-      const pass = prompt("Password admin per cancellare:");
-      if (pass === "admin123") {
-        mediaData.splice(index, 1);
-        salvaDati();
-        mostraMedia();
-        aggiornaClassificaGlobale();
-      } else {
-        alert("Password errata!");
-      }
-    }
-
-    function modificaPunteggio(index) {
-      const pass = prompt("Password admin per modificare:");
-      if (pass === "admin123") {
-        const nuovo = prompt("Inserisci nuovo punteggio:");
-        if (nuovo !== null && !isNaN(nuovo)) {
-          mediaData[index].punteggio = parseInt(nuovo);
-          salvaDati();
-          mostraMedia();
-          aggiornaClassificaGlobale();
-        }
-      } else {
-        alert("Password errata!");
-      }
-    }
-
-    document.getElementById("uploadForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const file = document.getElementById("mediaFile").files[0];
-      const descrizione = document.getElementById("descrizione").value;
-      const punteggio = parseInt(document.getElementById("punteggio").value) || 0;
-
-      const formData = new FormData();
-      formData.append("media", file);
-      formData.append("descrizione", descrizione);
-      formData.append("punteggio", punteggio);
-
-      fetch("upload.php", {
-        method: "POST",
-        body: formData
-      })
+  function mostraMedia() {
+    fetch('api.php')
       .then(res => res.json())
       .then(data => {
-        if (data.error) {
-          alert("Errore: " + data.error);
-        } else {
-          mediaData.push(data);
-          salvaDati();
-          mostraMedia();
-          aggiornaClassificaGlobale();
-          document.getElementById("uploadForm").reset();
-        }
-      })
-      .catch(err => alert("Errore di rete: " + err));
-    });
+        const gallery = document.getElementById("mediaGallery");
+        gallery.innerHTML = "";
+        const mediaData = data[teamKey] || [];
 
-    function aggiornaClassificaGlobale() {
-      const stored = localStorage.getItem(teamKey);
-      localStorage.setItem(teamKey, stored);
-    }
+        mediaData.forEach((item, index) => {
+          const div = document.createElement("div");
+          div.innerHTML = `
+            ${item.type.startsWith("image") ? 
+              <img src="${item.url}"> : 
+              <video src="${item.url}" controls></video>}
+            <p><strong>Descrizione:</strong> ${item.descrizione}</p>
+            <p><strong>Punteggio:</strong> ${item.punteggio}</p>
+            <hr>
+          `;
+          gallery.appendChild(div);
+        });
+      });
+  }
 
-    mostraMedia();
-  </script>
+  document.getElementById("uploadForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const file = document.getElementById("mediaFile").files[0];
+    const descrizione = document.getElementById("descrizione").value;
+    const punteggio = parseInt(document.getElementById("punteggio").value) || 0;
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      fetch('api.php', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          team: teamKey,
+          type: file.type,
+          url: evt.target.result,
+          descrizione,
+          punteggio
+        })
+      }).then(() => {
+        mostraMedia();
+        document.getElementById("uploadForm").reset();
+        aggiornaClassifica();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  mostraMedia();
+</script>
 </body>
 </html>
