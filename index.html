@@ -167,32 +167,23 @@
   ];
 
   function aggiornaClassifica() {
-  const tbody = document.getElementById("scoreBody");
-  tbody.innerHTML = "";
+    const tbody = document.getElementById("scoreBody");
+    tbody.innerHTML = "";
 
-  fetch('api.php')
-    .then(res => res.json())
-    .then(data => {
-      const teams = Object.keys(data);
-      const punteggi = teams.map(name => {
-        const totale = data[name].reduce((acc, cur) => acc + (parseInt(cur.punteggio) || 0), 0);
-        return { name, totale };
-      });
+    teams.forEach(team => {
+      const data = JSON.parse(localStorage.getItem(team.key)) || [];
+      const totale = data.reduce((acc, cur) => acc + (parseInt(cur.punteggio) || 0), 0);
 
-      punteggi.sort((a, b) => b.totale - a.totale); // ordina in base al punteggio
-
-      punteggi.forEach(team => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td style="padding: 10px; border: 1px solid #ccc;">${team.name}</td>
-          <td style="padding: 10px; border: 1px solid #ccc;">${team.totale}</td>
-        `;
-        tbody.appendChild(row);
-      });
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td style="padding: 10px; border: 1px solid #ccc;">${team.name}</td>
+        <td style="padding: 10px; border: 1px solid #ccc;">${totale}</td>
+      `;
+      tbody.appendChild(row);
     });
-}
-aggiornaClassifica();
-setInterval(aggiornaClassifica, 5000); // aggiornamento automatico ogni 5 secondi
+  }
+
+  aggiornaClassifica();
 </script>
 </body>
 </html>
