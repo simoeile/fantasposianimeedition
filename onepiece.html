@@ -4,18 +4,41 @@
   <meta charset="UTF-8">
   <title>One Piece - Fanta Sposi</title>
   <style>
-    body { font-family: 'Comic Sans MS', cursive; text-align: center; background-color: white; }
-    h1 { color: #008080; }
-    .media-container { margin: 20px auto; max-width: 600px; }
-    video, img { max-width: 100%; margin-top: 10px; }
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      background-color: white;
+    }
+    h1 {
+      color: #008080;
+    }
+    .media-container {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    video, img {
+      max-width: 100%;
+      margin-top: 10px;
+    }
     form, .home-button {
-      margin: 20px auto; padding: 10px; border: 2px solid #008080;
-      border-radius: 10px; width: 90%; max-width: 500px;
+      margin: 20px auto;
+      padding: 10px;
+      border: 2px solid #008080;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
     }
     input, textarea, select, button {
-      margin: 10px 0; padding: 8px; width: 90%; border-radius: 5px;
+      margin: 10px 0;
+      padding: 8px;
+      width: 90%;
+      border-radius: 5px;
     }
-    .admin-btn { color: red; cursor: pointer; font-weight: bold; }
+    .admin-btn {
+      color: red;
+      cursor: pointer;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -34,61 +57,82 @@
 
   <div id="mediaGallery" class="media-container"></div>
 
-<script>
-  const teamKey = "onepiece";
+  <script>
+    const teamKey = "onepieceMedia";
+    let mediaData = JSON.parse(localStorage.getItem(teamKey)) || [];
 
-  function mostraMedia() {
-    fetch('api.php')
-      .then(res => res.json())
-      .then(data => {
-        const gallery = document.getElementById("mediaGallery");
-        gallery.innerHTML = "";
-        const mediaData = data[teamKey] || [];
+    function salvaDati() {
+      localStorage.setItem(teamKey, JSON.stringify(mediaData));
+    }
 
-        mediaData.forEach((item, index) => {
-          const div = document.createElement("div");
-          div.innerHTML = `
-            ${item.type.startsWith("image") ? 
-              <img src="${item.url}"> : 
-              <video src="${item.url}" controls></video>}
-            <p><strong>Descrizione:</strong> ${item.descrizione}</p>
-            <p><strong>Punteggio:</strong> ${item.punteggio}</p>
-            <hr>
-          `;
-          gallery.appendChild(div);
-        });
+    function mostraMedia() {
+      const gallery = document.getElementById("mediaGallery");
+      gallery.innerHTML = "";
+      mediaData.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          ${item.type.startsWith("image") ? 
+            `<img src="${item.url}">` : 
+            `<video src="${item.url}" controls></video>`}
+          <p><strong>Descrizione:</strong> ${item.descrizione}</p>
+          <p><strong>Punteggio:</strong> ${item.punteggio}</p>
+          <button onclick="modificaPunteggio(${index})">✏️ Modifica punteggio</button>
+          <button onclick="cancella(${index})" class="admin-btn">🗑️ Cancella</button>
+          <hr>
+        `;
+        gallery.appendChild(div);
       });
-  }
+    }
 
-  document.getElementById("uploadForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const file = document.getElementById("mediaFile").files[0];
-    const descrizione = document.getElementById("descrizione").value;
-    const punteggio = parseInt(document.getElementById("punteggio").value) || 0;
-    if (!file) return;
+    function cancella(index) {
+      const pass = prompt("Password admin per cancellare:");
+      if (pass === "admin123") {
+        mediaData.splice(index, 1);
+        salvaDati();
+        mostraMedia();
+      } else {
+        alert("Password errata!");
+      }
+    }
 
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      fetch('api.php', {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          team: teamKey,
+    function modificaPunteggio(index) {
+      const pass = prompt("Password admin per modificare:");
+      if (pass === "admin123") {
+        const nuovo = prompt("Inserisci nuovo punteggio:");
+        if (nuovo !== null && !isNaN(nuovo)) {
+          mediaData[index].punteggio = parseInt(nuovo);
+          salvaDati();
+          mostraMedia();
+        }
+      } else {
+        alert("Password errata!");
+      }
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const file = document.getElementById("mediaFile").files[0];
+      const descrizione = document.getElementById("descrizione").value;
+      const punteggio = parseInt(document.getElementById("punteggio").value) || 0;
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const nuovoMedia = {
           type: file.type,
           url: evt.target.result,
           descrizione,
           punteggio
-        })
-      }).then(() => {
+        };
+        mediaData.push(nuovoMedia);
+        salvaDati();
         mostraMedia();
         document.getElementById("uploadForm").reset();
-        aggiornaClassifica();
-      });
-    };
-    reader.readAsDataURL(file);
-  });
+      };
+      reader.readAsDataURL(file);
+    });
 
-  mostraMedia();
-</script>
+    mostraMedia();
+  </script>
 </body>
 </html>
