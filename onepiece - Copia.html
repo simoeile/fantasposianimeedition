@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>One Piece - Fanta Sposi</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      background-color: white;
+    }
+    h1 {
+      color: #008080;
+    }
+    .media-container {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+    video, img {
+      max-width: 100%;
+      margin-top: 10px;
+    }
+    form, .home-button {
+      margin: 20px auto;
+      padding: 10px;
+      border: 2px solid #008080;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+    }
+    input, textarea, select, button {
+      margin: 10px 0;
+      padding: 8px;
+      width: 90%;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>One Piece</h1>
+
+  <div class="home-button">
+    <button onclick="window.location.href='index.html'">🏠 Torna alla Home</button>
+  </div>
+
+  <form id="uploadForm">
+    <input type="file" id="mediaFile" accept="image/,video/" required /><br />
+    <textarea id="descrizione" placeholder="Scrivi una descrizione"></textarea><br />
+    <input type="number" id="punteggio" placeholder="Punteggio ottenuto" min="0" required /><br />
+    <button type="submit">Carica</button>
+  </form>
+
+  <div id="mediaGallery" class="media-container"></div>
+
+  <script>
+    const teamKey = "onepieceMedia";
+
+    async function fetchMedia() {
+      try {
+        const res = await fetch('get_scores.php');
+        if (!res.ok) throw new Error('Errore caricamento classifica');
+        const data = await res.json();
+        return data[teamKey] || [];
+      } catch (e) {
+        alert("Errore caricamento media: " + e.message);
+        return [];
+      }
+    }
+
+    function mostraMedia(mediaData) {
+      const gallery = document.getElementById("mediaGallery");
+      gallery.innerHTML = "";
+      mediaData.forEach((item) => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          ${(item.immagine.endsWith('.mp4') || item.immagine.endsWith('.webm')) ? 
+            <video src="${item.immagine}" controls></video> : 
+            <img src="${item.immagine}" alt="Media">}
+          <p><strong>Descrizione:</strong> ${item.descrizione || ''}</p>
+          <p><strong>Punteggio:</strong> ${item.punteggio}</p>
+          <hr>
+        `;
+        gallery.appendChild(div);
+      });
+    }
+
+    async function aggiornaGallery() {
+      const mediaData = await fetchMedia();
+      mostraMedia(mediaData);
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("mediaFile");
+      const descrizione = document.getElementById("descrizione").value.trim();
+      const punteggio = parseInt(document.getElementById("punteggio").value);
+
+      if (!fileInput.files.length) {
+        alert("Seleziona un file da caricare");
+        return;
+      }
+      if (isNaN(punteggio) || punteggio < 0) {
+        alert("Inserisci un punteggio valido");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("teamKey", teamKey);
+      formData.append("punteggio", punteggio);
+      formData.append("descrizione", descrizione);
+      formData.append("immagine", file);
+
+      try {
+        const res = await fetch('upload_score.php', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert("Upload effettuato con successo!");
+          document.getElementById("uploadForm").reset();
+          aggiornaGallery();
+        } else {
+          alert("Errore caricamento: " + (result.message || ''));
+        }
+      } catch (e) {
+        alert("Errore di rete: " + e.message);
+      }
+    });
+
+    aggiornaGallery();
+  </script>
+</body>
+</html>
