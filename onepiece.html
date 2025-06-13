@@ -1,44 +1,17 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Onepiece - Fanta Sposi</title>
   <style>
-    body {
-      font-family: 'Comic Sans MS', cursive;
-      text-align: center;
-      background-color: white;
-    }
-    h1 {
-      color: #008080;
-    }
-    .media-container {
-      margin: 20px auto;
-      max-width: 600px;
-    }
-    video, img {
-      max-width: 100%;
-      margin-top: 10px;
-    }
-    form, .home-button {
-      margin: 20px auto;
-      padding: 10px;
-      border: 2px solid #008080;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
-    }
-    input, textarea, select, button {
-      margin: 10px 0;
-      padding: 8px;
-      width: 90%;
-      border-radius: 5px;
-    }
-    .admin-btn {
-      color: red;
-      cursor: pointer;
-      font-weight: bold;
-    }
+    /* Stili identici */
+    body { font-family: 'Comic Sans MS', cursive; text-align: center; background-color: white; }
+    h1 { color: #008080; }
+    .media-container { margin: 20px auto; max-width: 600px; }
+    video, img { max-width: 100%; margin-top: 10px; }
+    form, .home-button { margin: 20px auto; padding: 10px; border: 2px solid #008080; border-radius: 10px; width: 90%; max-width: 500px; }
+    input, textarea, select, button { margin: 10px 0; padding: 8px; width: 90%; border-radius: 5px; }
+    .admin-btn { color: red; cursor: pointer; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -58,11 +31,35 @@
   <div id="mediaGallery" class="media-container"></div>
 
   <script>
+    const baseUrl = 'https://storage.fantasposianimeedition.it/apps/files/files';
     const teamKey = "onepieceMedia";
-    let mediaData = JSON.parse(localStorage.getItem(teamKey)) || [];
+    let mediaData = [];
 
-    function salvaDati() {
-      localStorage.setItem(teamKey, JSON.stringify(mediaData));
+    async function caricaMedia() {
+      try {
+        const response = await fetch(`${baseUrl}/${teamKey}.json`);
+        if (!response.ok) throw new Error('Dati non trovati');
+        mediaData = await response.json();
+      } catch (e) {
+        console.warn('Impossibile caricare dati, uso array vuoto.');
+        mediaData = [];
+      }
+      mostraMedia();
+    }
+
+    async function salvaMedia() {
+      try {
+        const response = await fetch(`${baseUrl}/${teamKey}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(mediaData)
+        });
+        if (!response.ok) throw new Error('Errore salvataggio dati');
+        return true;
+      } catch (e) {
+        alert('Errore nel salvataggio dei dati: ' + e.message);
+        return false;
+      }
     }
 
     function mostraMedia() {
@@ -84,24 +81,11 @@
       });
     }
 
-    function cancella(index) {
+    async function cancella(index) {
       const pass = prompt("Password admin per cancellare:");
       if (pass === "admin123") {
         mediaData.splice(index, 1);
-        salvaDati();
-        mostraMedia();
-      } else {
-        alert("Password errata!");
-      }
-    }
-
-    function modificaPunteggio(index) {
-      const pass = prompt("Password admin per modificare:");
-      if (pass === "admin123") {
-        const nuovo = prompt("Inserisci nuovo punteggio:");
-        if (nuovo !== null && !isNaN(nuovo)) {
-          mediaData[index].punteggio = parseInt(nuovo);
-          salvaDati();
+        if (await salvaMedia()) {
           mostraMedia();
         }
       } else {
@@ -109,15 +93,32 @@
       }
     }
 
-    document.getElementById("uploadForm").addEventListener("submit", function(e) {
+    async function modificaPunteggio(index) {
+      const pass = prompt("Password admin per modificare:");
+      if (pass === "admin123") {
+        const nuovo = prompt("Inserisci nuovo punteggio:");
+        if (nuovo !== null && !isNaN(nuovo)) {
+          mediaData[index].punteggio = parseInt(nuovo);
+          if (await salvaMedia()) {
+            mostraMedia();
+          }
+        }
+      } else {
+        alert("Password errata!");
+      }
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const file = document.getElementById("mediaFile").files[0];
       const descrizione = document.getElementById("descrizione").value;
       const punteggio = parseInt(document.getElementById("punteggio").value) || 0;
       if (!file) return;
 
+      // Nota: questo codice mantiene ancora il file in base64 in memoria locale,
+      // idealmente qui va fatto un upload reale su storage remoto e salvato solo URL.
       const reader = new FileReader();
-      reader.onload = function(evt) {
+      reader.onload = async function(evt) {
         const nuovoMedia = {
           type: file.type,
           url: evt.target.result,
@@ -125,14 +126,15 @@
           punteggio
         };
         mediaData.push(nuovoMedia);
-        salvaDati();
-        mostraMedia();
-        document.getElementById("uploadForm").reset();
+        if (await salvaMedia()) {
+          mostraMedia();
+          document.getElementById("uploadForm").reset();
+        }
       };
       reader.readAsDataURL(file);
     });
 
-    mostraMedia();
+    caricaMedia();
   </script>
 </body>
 </html>
