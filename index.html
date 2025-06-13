@@ -1,23 +1,124 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Fanta Sposi - Anime Edition</title>
   <style>
-    /* Stili rimangono uguali */
-    body { font-family: 'Comic Sans MS', cursive; margin: 0; background-color: white; text-align: center; }
-    header { background-image: url('Logo SI - senza sfondo.png'); background-size: contain; background-repeat: no-repeat; background-position: center; padding: 40px 10px; }
-    h1 { text-transform: uppercase; font-size: 3em; color: black; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; margin: 0; padding: 20px 10px; }
-    nav { display: flex; justify-content: center; gap: 20px; background-color: #008080; padding: 10px; }
-    nav a { color: white; text-decoration: none; font-weight: bold; font-size: 1.1em; }
-    .container { padding: 20px; }
-    section h2 { text-transform: uppercase; font-size: 1.8em; }
-    .team { width: 90%; max-width: 600px; height: 200px; margin: 30px auto; background-size: contain; background-position: center; background-repeat: no-repeat; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.3s ease; }
-    .team:hover { transform: scale(1.05); }
-    table { width: 80%; margin: 0 auto; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #008080; padding: 10px; text-align: center; }
-    th { background-color: #008080; color: white; }
-    footer { background-image: url('Logo SI - senza sfondo.png'); background-size: contain; background-repeat: no-repeat; background-position: center; height: 150px; margin-top: 40px; }
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      margin: 0;
+      background-color: white;
+      text-align: center;
+    }
+
+    header {
+      background-image: url('Logo SI - senza sfondo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      padding: 40px 10px;
+    }
+
+    h1 {
+      text-transform: uppercase;
+      font-size: 3em;
+      color: black;
+      text-shadow:
+        -1px -1px 0 #fff,
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff;
+      margin: 0;
+      padding: 20px 10px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background-color: #008080;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffd700;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    section h2 {
+      text-transform: uppercase;
+      font-size: 1.8em;
+      margin-bottom: 10px;
+    }
+
+    .team {
+      width: 180px;
+      height: 200px;
+      margin: 20px;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 128, 128, 0.4);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: inline-block;
+    }
+
+    .team:hover {
+      transform: scale(1.1) rotate(2deg);
+      box-shadow: 0 8px 20px rgba(0, 128, 128, 0.7);
+    }
+
+    table {
+      width: 100%;
+      margin: 30px auto 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      background: white;
+    }
+
+    th {
+      background-color: #008080;
+      color: white;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    tbody tr:hover {
+      background-color: #f0f8f8;
+    }
+
+    footer {
+      background-image: url('Logo SI - senza sfondo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      height: 150px;
+      margin-top: 40px;
+    }
   </style>
 </head>
 <body>
@@ -39,28 +140,26 @@
     </section>
 
     <section id="squadre">
-      <div class="team" style="background-image: url('Logo One Piece - senza sfondo.png')" onclick="openTeam('onepiece.html')"></div>
-      <div class="team" style="background-image: url('Logo Arale - senza sfondo.png')" onclick="openTeam('arale.html')"></div>
-      <div class="team" style="background-image: url('Logo Naruto Shippuden - senza sfondo.png')" onclick="openTeam('naruto.html')"></div>
-      <div class="team" style="background-image: url('Logo Dragon Ball Z - senza sfondo.png')" onclick="openTeam('dragonballz.html')"></div>
-      <div class="team" style="background-image: url('Logo Detective Conan - senza sfondo.png')" onclick="openTeam('conan.html')"></div>
-      <div class="team" style="background-image: url('Logo Holly e Benji - senza sfondo.png')" onclick="openTeam('hollyebenji.html')"></div>
-      <div class="team" style="background-image: url('Logo Ken il guerriero - senza sfondo.png')" onclick="openTeam('ken.html')"></div>
-      <div class="team" style="background-image: url('Logo Yu yu hakusho - senza sfondo.png')" onclick="openTeam('yuyuhakusho.html')"></div>
+      <div class="team" style="background-image: url('Logo One Piece - senza sfondo.png')" onclick="openTeam('onepiece.html')" title="One Piece"></div>
+      <div class="team" style="background-image: url('Logo Arale - senza sfondo.png')" onclick="openTeam('arale.html')" title="Arale"></div>
+      <div class="team" style="background-image: url('Logo Naruto Shippuden - senza sfondo.png')" onclick="openTeam('naruto.html')" title="Naruto Shippuden"></div>
+      <div class="team" style="background-image: url('Logo Dragon Ball Z - senza sfondo.png')" onclick="openTeam('dragonballz.html')" title="Dragon Ball Z"></div>
+      <div class="team" style="background-image: url('Logo Detective Conan - senza sfondo.png')" onclick="openTeam('conan.html')" title="Detective Conan"></div>
+      <div class="team" style="background-image: url('Logo Holly e Benji - senza sfondo.png')" onclick="openTeam('hollyebenji.html')" title="Holly e Benji"></div>
+      <div class="team" style="background-image: url('Logo Ken il guerriero - senza sfondo.png')" onclick="openTeam('ken.html')" title="Ken il Guerriero"></div>
+      <div class="team" style="background-image: url('Logo Yu yu hakusho - senza sfondo.png')" onclick="openTeam('yuyuhakusho.html')" title="Yu Yu Hakusho"></div>
     </section>
 
     <section id="classifica">
       <h2>Classifica</h2>
-      <table id="scoreTable" style="margin: auto; border-collapse: collapse;">
+      <table id="scoreTable">
         <thead>
           <tr>
-            <th style="padding: 10px; border: 1px solid #ccc;">Squadra</th>
-            <th style="padding: 10px; border: 1px solid #ccc;">Punteggio</th>
+            <th>Squadra</th>
+            <th>Punteggio</th>
           </tr>
         </thead>
-        <tbody id="scoreBody">
-          <!-- Riempito da JavaScript -->
-        </tbody>
+        <tbody id="scoreBody"></tbody>
       </table>
     </section>
   </div>
@@ -68,7 +167,9 @@
   <footer></footer>
 
   <script>
-    const baseUrl = 'https://storage.fantasposianimeedition.it/apps/files/files';
+    function openTeam(page) {
+      window.location.href = page;
+    }
 
     const teams = [
       { name: 'One Piece', key: 'onepieceMedia' },
@@ -81,40 +182,25 @@
       { name: 'Yu Yu Hakusho', key: 'yuyuhakushoMedia' },
     ];
 
-    async function caricaDatiSquadra(teamKey) {
-      try {
-        const response = await fetch(`${baseUrl}/${teamKey}.json`);
-        if (!response.ok) throw new Error('Dati non trovati');
-        const dati = await response.json();
-        return dati;
-      } catch (e) {
-        console.warn(`Impossibile caricare dati per ${teamKey}, uso array vuoto.`);
-        return [];
-      }
-    }
-
-    async function aggiornaClassifica() {
+    function aggiornaClassifica() {
       const tbody = document.getElementById("scoreBody");
       tbody.innerHTML = "";
 
-      for (const team of teams) {
-        const data = await caricaDatiSquadra(team.key);
+      teams.forEach(team => {
+        const data = JSON.parse(localStorage.getItem(team.key)) || [];
         const totale = data.reduce((acc, cur) => acc + (parseInt(cur.punteggio) || 0), 0);
 
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td style="padding: 10px; border: 1px solid #ccc;">${team.name}</td>
-          <td style="padding: 10px; border: 1px solid #ccc;">${totale}</td>
+          <td>${team.name}</td>
+          <td>${totale}</td>
         `;
         tbody.appendChild(row);
-      }
-    }
-
-    function openTeam(page) {
-      window.location.href = page;
+      });
     }
 
     aggiornaClassifica();
   </script>
+
 </body>
 </html>
