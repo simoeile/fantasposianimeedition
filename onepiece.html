@@ -79,7 +79,7 @@
   <h1>Onepiece</h1>
 
   <div class="home-button">
-    <button onclick="vaiAllaHome()">🏠 Torna alla Home</button>
+    <button onclick="window.location.href='index.html'">🏠 Torna alla Home</button>
   </div>
 
   <form id="uploadForm">
@@ -97,6 +97,7 @@
 
     function salvaDati() {
       localStorage.setItem(teamKey, JSON.stringify(mediaData));
+      console.log("📦 Dati salvati su localStorage:", mediaData);
     }
 
     function mostraMedia() {
@@ -149,14 +150,25 @@
 
     document.getElementById("uploadForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const file = document.getElementById("mediaFile").files[0];
+
+      const fileInput = document.getElementById("mediaFile");
+      const file = fileInput.files[0];
+
+      console.log("📝 File selezionato:", file);
+
+      if (!file) {
+        alert("Seleziona un file!");
+        return;
+      }
+
       const descrizione = document.getElementById("descrizione").value.trim();
       const punteggioInput = document.getElementById("punteggio").value;
       const punteggio = parseInt(punteggioInput) || 0;
-      if (!file) return;
 
       const reader = new FileReader();
+
       reader.onload = function(evt) {
+        console.log("✅ File caricato, lunghezza base64:", evt.target.result.length);
         const nuovoMedia = {
           type: file.type,
           url: evt.target.result,
@@ -168,12 +180,14 @@
         mostraMedia();
         document.getElementById("uploadForm").reset();
       };
+
+      reader.onerror = function(error) {
+        console.error("❌ Errore durante il caricamento del file:", error);
+        alert("Errore durante la lettura del file.");
+      };
+
       reader.readAsDataURL(file);
     });
-
-    function vaiAllaHome() {
-      window.location.href = "index.html?reload=true";
-    }
 
     mostraMedia();
   </script>
