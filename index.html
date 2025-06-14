@@ -1,48 +1,206 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Fanta Sposi – Classifica</title>
+  <meta charset="UTF-8" />
+  <title>Fanta Sposi - Anime Edition</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f4f4f4; }
-    .team { margin: 30px auto; background: white; padding: 20px; max-width: 800px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .media-container { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
-    .media-item { background: #eef9ff; padding: 10px; border-radius: 8px; width: calc(33% - 20px); min-width: 200px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    img, video { max-width: 100%; border-radius: 5px; }
-    .desc { margin-top: 5px; font-size: 0.9em; color: #444; }
-    .score { margin-top: 3px; font-weight: bold; color: #008000; }
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      margin: 0;
+      background-color: white;
+      text-align: center;
+    }
+
+    header {
+      background-image: url('Logo SI - senza sfondo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      padding: 40px 10px;
+    }
+
+    h1 {
+      text-transform: uppercase;
+      font-size: 3em;
+      color: black;
+      text-shadow:
+        -1px -1px 0 #fff,
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff;
+      margin: 0;
+      padding: 20px 10px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background-color: #008080;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffd700;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    section h2 {
+      text-transform: uppercase;
+      font-size: 1.8em;
+      margin-bottom: 10px;
+    }
+
+    .team {
+      width: 180px;
+      height: 200px;
+      margin: 20px;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 128, 128, 0.4);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: inline-block;
+    }
+
+    .team:hover {
+      transform: scale(1.1) rotate(2deg);
+      box-shadow: 0 8px 20px rgba(0, 128, 128, 0.7);
+    }
+
+    table {
+      width: 100%;
+      margin: 30px auto 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      background: white;
+    }
+
+    th {
+      background-color: #008080;
+      color: white;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    tbody tr:hover {
+      background-color: #f0f8f8;
+    }
+
+    footer {
+      background-image: url('Logo SI - senza sfondo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      height: 150px;
+      margin-top: 40px;
+    }
   </style>
 </head>
 <body>
-  <h1>Fanta Sposi – Anime Edition</h1>
-  <div id="onepiece" class="team">
-    <h2>One Piece</h2>
-    <div id="onepieceGallery" class="media-container"></div>
-  </div>
-  <div id="naruto" class="team">
-    <h2>Naruto</h2>
-    <div id="narutoGallery" class="media-container"></div>
+
+  <header>
+    <h1>Fanta Sposi - Anime Edition</h1>
+  </header>
+
+  <nav>
+    <a href="#istruzioni">Istruzioni</a>
+    <a href="#squadre">Squadre</a>
+    <a href="#classifica">Classifica</a>
+  </nav>
+
+  <div class="container">
+    <section id="istruzioni">
+      <h2>COME SI GIOCA?</h2>
+      <p>Benvenuti al Fanta Sposi in stile anime! Ogni tavolo/squadra ha tempo fino al taglio della torta per completare quante più sfide possibili. Ogni sfida completata farà guadagnare punti al proprio tavolo. La squadra che realizzerà il punteggio più alto vincerà la partita e la gloria eterna (magari anche un piccolo forziere!).</p>
+    </section>
+
+    <section id="squadre">
+      <div class="team" style="background-image: url('Logo One Piece - senza sfondo.png')" onclick="openTeam('onepiece.html')" title="One Piece"></div>
+      <div class="team" style="background-image: url('Logo Arale - senza sfondo.png')" onclick="openTeam('arale.html')" title="Arale"></div>
+      <div class="team" style="background-image: url('Logo Naruto Shippuden - senza sfondo.png')" onclick="openTeam('naruto.html')" title="Naruto Shippuden"></div>
+      <div class="team" style="background-image: url('Logo Dragon Ball Z - senza sfondo.png')" onclick="openTeam('dragonballz.html')" title="Dragon Ball Z"></div>
+      <div class="team" style="background-image: url('Logo Detective Conan - senza sfondo.png')" onclick="openTeam('conan.html')" title="Detective Conan"></div>
+      <div class="team" style="background-image: url('Logo Holly e Benji - senza sfondo.png')" onclick="openTeam('hollyebenji.html')" title="Holly e Benji"></div>
+      <div class="team" style="background-image: url('Logo Ken il guerriero - senza sfondo.png')" onclick="openTeam('ken.html')" title="Ken il Guerriero"></div>
+      <div class="team" style="background-image: url('Logo Yu yu hakusho - senza sfondo.png')" onclick="openTeam('yuyuhakusho.html')" title="Yu Yu Hakusho"></div>
+    </section>
+
+    <section id="classifica">
+      <h2>Classifica</h2>
+      <table id="scoreTable">
+        <thead>
+          <tr>
+            <th>Squadra</th>
+            <th>Punteggio</th>
+          </tr>
+        </thead>
+        <tbody id="scoreBody"></tbody>
+      </table>
+    </section>
   </div>
 
+  <footer></footer>
+
   <script>
-    async function loadTeam(team) {
-      const res = await fetch(`list.php?team=${team}`);
-      const arr = await res.json();
-      const gallery = document.getElementById(team + "Gallery");
-      arr.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "media-item";
-        div.innerHTML = `
-          ${item.type.startsWith("image") ? `<img src="${item.url}">` : `<video src="${item.url}" controls></video>`}
-          <div class="desc">${item.descrizione}</div>
-          <div class="score">Punteggio: ${item.punteggio}</div>
+    function openTeam(page) {
+      window.location.href = page;
+    }
+
+    const teams = [
+      { name: 'One Piece', key: 'onepieceMedia' },
+      { name: 'Arale', key: 'araleMedia' },
+      { name: 'Naruto', key: 'narutoMedia' },
+      { name: 'Dragon Ball Z', key: 'dragonballzMedia' },
+      { name: 'Detective Conan', key: 'conanMedia' },
+      { name: 'Holly e Benji', key: 'hollybenjiMedia' },
+      { name: 'Ken il Guerriero', key: 'kenMedia' },
+      { name: 'Yu Yu Hakusho', key: 'yuyuhakushoMedia' },
+    ];
+
+    function aggiornaClassifica() {
+      const tbody = document.getElementById("scoreBody");
+      tbody.innerHTML = "";
+
+      teams.forEach(team => {
+        const data = JSON.parse(localStorage.getItem(team.key)) || [];
+        const totale = data.reduce((acc, cur) => acc + (parseInt(cur.punteggio) || 0), 0);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${team.name}</td>
+          <td>${totale}</td>
         `;
-        gallery.append(div);
+        tbody.appendChild(row);
       });
     }
 
-    loadTeam("onepiece");
-    loadTeam("naruto");
+    aggiornaClassifica();
   </script>
+
 </body>
 </html>
