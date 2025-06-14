@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Onepiece - Fanta Sposi</title>
+  <title>One Piece - Fanta Sposi</title>
   <style>
     body {
       font-family: 'Comic Sans MS', cursive;
@@ -35,7 +35,7 @@
       max-width: 500px;
       background-color: #f9f9f9;
     }
-    input, textarea, select, button {
+    input, textarea, button {
       margin: 10px 0;
       padding: 10px;
       width: 90%;
@@ -76,7 +76,7 @@
   </style>
 </head>
 <body>
-  <h1>Onepiece</h1>
+  <h1>One Piece</h1>
 
   <div class="home-button">
     <button onclick="window.location.href='index.html'">🏠 Torna alla Home</button>
@@ -97,7 +97,6 @@
 
     function salvaDati() {
       localStorage.setItem(teamKey, JSON.stringify(mediaData));
-      console.log("📦 Dati salvati su localStorage:", mediaData);
     }
 
     function mostraMedia() {
@@ -148,45 +147,50 @@
       }
     }
 
-    document.getElementById("uploadForm").addEventListener("submit", function(e) {
+    document.getElementById("uploadForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-
-      const fileInput = document.getElementById("mediaFile");
-      const file = fileInput.files[0];
-
-      console.log("📝 File selezionato:", file);
-
-      if (!file) {
-        alert("Seleziona un file!");
-        return;
-      }
-
+      const file = document.getElementById("mediaFile").files[0];
       const descrizione = document.getElementById("descrizione").value.trim();
       const punteggioInput = document.getElementById("punteggio").value;
       const punteggio = parseInt(punteggioInput) || 0;
 
-      const reader = new FileReader();
+      if (!file) return;
 
-      reader.onload = function(evt) {
-        console.log("✅ File caricato, lunghezza base64:", evt.target.result.length);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const credentials = btoa("simone:Ch@rger01!");
+
+      try {
+        const response = await fetch("https://storage.fantasposianimeedition.it/apps/files/files", {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Authorization": "Basic " + credentials
+          }
+        });
+
+        if (!response.ok) throw new Error("Errore upload: " + response.statusText);
+
+        // Adatta questa parte in base alla risposta esatta del server
+        const result = await response.json();
+        const fileUrl = result.url || result.file || URL.createObjectURL(file); // Fallback se non arriva URL
+
         const nuovoMedia = {
           type: file.type,
-          url: evt.target.result,
+          url: fileUrl,
           descrizione,
           punteggio
         };
+
         mediaData.push(nuovoMedia);
         salvaDati();
         mostraMedia();
         document.getElementById("uploadForm").reset();
-      };
 
-      reader.onerror = function(error) {
-        console.error("❌ Errore durante il caricamento del file:", error);
-        alert("Errore durante la lettura del file.");
-      };
-
-      reader.readAsDataURL(file);
+      } catch (err) {
+        alert("Errore durante upload: " + err.message);
+      }
     });
 
     mostraMedia();
