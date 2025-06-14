@@ -79,7 +79,7 @@
   <h1>Onepiece</h1>
 
   <div class="home-button">
-    <button onclick="window.location.href='index.html'">🏠 Torna alla Home</button>
+    <button onclick="vaiAllaHome()">🏠 Torna alla Home</button>
   </div>
 
   <form id="uploadForm">
@@ -170,6 +170,10 @@
       };
       reader.readAsDataURL(file);
     });
+
+    function vaiAllaHome() {
+      window.location.href = "index.html?reload=true";
+    }
 
     mostraMedia();
   </script>
