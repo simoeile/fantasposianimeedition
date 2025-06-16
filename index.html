@@ -10,7 +10,6 @@
       background-color: white;
       text-align: center;
     }
-
     header {
       background-image: url('Logo SI - senza sfondo.png');
       background-size: contain;
@@ -18,7 +17,6 @@
       background-position: center;
       padding: 40px 10px;
     }
-
     h1 {
       text-transform: uppercase;
       font-size: 3em;
@@ -31,7 +29,6 @@
       margin: 0;
       padding: 20px 10px;
     }
-
     nav {
       display: flex;
       justify-content: center;
@@ -39,7 +36,6 @@
       background-color: #008080;
       padding: 10px;
     }
-
     nav a {
       color: white;
       text-decoration: none;
@@ -47,23 +43,19 @@
       font-size: 1.1em;
       transition: color 0.3s ease;
     }
-
     nav a:hover {
       color: #ffd700;
     }
-
     .container {
       padding: 20px;
       max-width: 900px;
       margin: 0 auto;
     }
-
     section h2 {
       text-transform: uppercase;
       font-size: 1.8em;
       margin-bottom: 10px;
     }
-
     .team {
       width: 180px;
       height: 200px;
@@ -77,12 +69,10 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       display: inline-block;
     }
-
     .team:hover {
       transform: scale(1.1) rotate(2deg);
       box-shadow: 0 8px 20px rgba(0, 128, 128, 0.7);
     }
-
     table {
       width: 100%;
       margin: 30px auto 0;
@@ -92,25 +82,21 @@
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
     th, td {
       padding: 15px;
       text-align: center;
       border-bottom: 1px solid #ddd;
       background: white;
     }
-
     th {
       background-color: #008080;
       color: white;
       font-weight: 700;
       text-transform: uppercase;
     }
-
     tbody tr:hover {
       background-color: #f0f8f8;
     }
-
     footer {
       background-image: url('Logo SI - senza sfondo.png');
       background-size: contain;
@@ -182,21 +168,24 @@
       { name: 'Yu Yu Hakusho', key: 'yuyuhakushoMedia' },
     ];
 
-    function aggiornaClassifica() {
-      const tbody = document.getElementById("scoreBody");
-      tbody.innerHTML = "";
+    async function aggiornaClassifica() {
+      try {
+        const res = await fetch('https://storage.fantasposianimeedition.it/backend/get-classifica');
+        const data = await res.json();
 
-      teams.forEach(team => {
-        const data = JSON.parse(localStorage.getItem(team.key)) || [];
-        const totale = data.reduce((acc, cur) => acc + (parseInt(cur.punteggio) || 0), 0);
+        const tbody = document.getElementById("scoreBody");
+        tbody.innerHTML = "";
 
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${team.name}</td>
-          <td>${totale}</td>
-        `;
-        tbody.appendChild(row);
-      });
+        teams.forEach(team => {
+          const teamData = data[team.key] || [];
+          const totale = teamData.reduce((acc, cur) => acc + (parseInt(cur.punteggio) || 0), 0);
+          const row = document.createElement("tr");
+          row.innerHTML = `<td>${team.name}</td><td>${totale}</td>`;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        console.error("Errore caricamento classifica:", err);
+      }
     }
 
     aggiornaClassifica();
