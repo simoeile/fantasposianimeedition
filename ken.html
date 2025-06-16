@@ -1,177 +1,62 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <title>Ken il guerriero - Fanta Sposi</title>
+  <meta charset="UTF-8">
+  <title>Ken il guerriero – Fanta Sposi</title>
   <style>
-    body {
-      font-family: 'Comic Sans MS', cursive;
-      text-align: center;
-      background-color: white;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      color: #008080;
-      margin-bottom: 20px;
-    }
-    .media-container {
-      margin: 20px auto;
-      max-width: 600px;
-      text-align: left;
-    }
-    video, img {
-      max-width: 100%;
-      margin-top: 10px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,128,128,0.3);
-      display: block;
-    }
-    form, .home-button {
-      margin: 20px auto;
-      padding: 15px;
-      border: 2px solid #008080;
-      border-radius: 10px;
-      max-width: 500px;
-      background-color: #f9f9f9;
-    }
-    input, textarea, select, button {
-      margin: 10px 0;
-      padding: 10px;
-      width: 90%;
-      border-radius: 5px;
-      border: 1px solid #008080;
-      font-size: 1em;
-    }
-    button {
-      cursor: pointer;
-      background-color: #008080;
-      color: white;
-      border: none;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #006666;
-    }
-    .admin-btn {
-      color: #c00;
-      cursor: pointer;
-      font-weight: bold;
-      background: none;
-      border: none;
-      font-size: 1em;
-      margin-top: 5px;
-    }
-    .media-item {
-      margin-bottom: 30px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 15px;
-    }
-    .media-description {
-      margin: 8px 0 5px 0;
-      font-weight: bold;
-      color: #006666;
-    }
+    body { font-family: 'Comic Sans MS', cursive; text-align: center; padding: 20px; }
+    form, .home-button { margin: 20px auto; padding: 15px; border: 2px solid #008080; border-radius: 10px; max-width: 500px; background: #f9f9f9; }
+    input, textarea, button { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #008080; border-radius: 5px; font-size: 1em; }
+    button { background: #008080; color: white; font-weight: bold; cursor: pointer; }
+    button:hover { background: #006666; }
   </style>
 </head>
 <body>
-  <h1>Ken il guerriero</h1>
+  <!-- Sostituisci il titolo di testo con un'immagine -->
+  <img src="Logo Ken il guerriero - senza sfondo.png" alt="Ken il guerriero" style="max-width: 100%; height: auto;">
+  <!-- Modifica il percorso (src) sopra per caricare l'immagine desiderata -->
 
   <div class="home-button">
-    <button onclick="window.location.href='index.html'">🏠 Torna alla Home</button>
+    <button onclick="location.href='index.html'">🏠 Torna alla Home</button>
   </div>
-
-  <form id="uploadForm">
-    <input type="file" id="mediaFile" accept="image/*,video/*" required /><br />
-    <textarea id="descrizione" placeholder="Scrivi una descrizione"></textarea><br />
-    <input type="number" id="punteggio" placeholder="Punteggio ottenuto" min="0" /><br />
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" id="mediaFile" accept="image/*,video/*" required /><br>
+    <textarea id="descrizione" placeholder="Scrivi una descrizione"></textarea><br>
+    <input type="number" id="punteggio" placeholder="Punteggio ottenuto" min="0" /><br>
     <button type="submit">Carica</button>
   </form>
 
-  <div id="mediaGallery" class="media-container"></div>
-
   <script>
-    const teamKey = "kenMedia";
-    let mediaData = JSON.parse(localStorage.getItem(teamKey)) || [];
-
-    function salvaDati() {
-      localStorage.setItem(teamKey, JSON.stringify(mediaData));
-    }
-
-    function mostraMedia() {
-      const gallery = document.getElementById("mediaGallery");
-      gallery.innerHTML = "";
-      mediaData.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "media-item";
-        div.innerHTML = `
-          ${item.type.startsWith("image") ? 
-            `<img src="${item.url}" alt="media immagine">` : 
-            `<video src="${item.url}" controls preload="metadata"></video>`}
-          <p class="media-description">Descrizione: ${item.descrizione || "Nessuna descrizione"}</p>
-          <p>Punteggio: ${item.punteggio}</p>
-          <button class="admin-btn" onclick="modificaPunteggio(${index})">✏️ Modifica punteggio</button>
-          <button class="admin-btn" onclick="cancella(${index})">🗑️ Cancella</button>
-        `;
-        gallery.appendChild(div);
-      });
-    }
-
-    function cancella(index) {
-      const pass = prompt("Password admin per cancellare:");
-      if (pass === "admin123") {
-        if(confirm("Sei sicuro di voler cancellare questo media?")) {
-          mediaData.splice(index, 1);
-          salvaDati();
-          mostraMedia();
-        }
-      } else {
-        alert("Password errata!");
-      }
-    }
-
-    function modificaPunteggio(index) {
-      const pass = prompt("Password admin per modificare:");
-      if (pass === "admin123") {
-        const nuovo = prompt("Inserisci nuovo punteggio:");
-        if (nuovo !== null && !isNaN(nuovo) && nuovo.trim() !== "") {
-          mediaData[index].punteggio = parseInt(nuovo);
-          salvaDati();
-          mostraMedia();
-        } else {
-          alert("Punteggio non valido!");
-        }
-      } else {
-        alert("Password errata!");
-      }
-    }
-
-    document.getElementById("uploadForm").addEventListener("submit", function(e) {
+    document.getElementById("uploadForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const file = document.getElementById("mediaFile").files[0];
-      const descrizione = document.getElementById("descrizione").value.trim();
-      const punteggioInput = document.getElementById("punteggio").value;
-      const punteggio = parseInt(punteggioInput) || 0;
-      if (!file) return;
+      const descrizione = document.getElementById("descrizione").value;
+      const punteggio = document.getElementById("punteggio").value;
 
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const nuovoMedia = {
-          type: file.type,
-          url: evt.target.result,
-          descrizione,
-          punteggio
-        };
-        mediaData.push(nuovoMedia);
-        salvaDati();
-        mostraMedia();
-        document.getElementById("uploadForm").reset();
-      };
-      reader.readAsDataURL(file);
+      if (!file) return alert("Seleziona un file!");
+
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("descrizione", descrizione);
+      fd.append("punteggio", punteggio);
+      fd.append("team", "onepiece");
+
+      try {
+        const res = await fetch("upload.php", {
+          method: "POST",
+          body: fd
+        });
+        const json = await res.json();
+        if (json.success) {
+          alert("Upload riuscito!");
+          location.reload();
+        } else {
+          alert("Errore: " + json.error);
+        }
+      } catch (err) {
+        alert("Upload fallito: " + err.message);
+      }
     });
-
-    mostraMedia();
   </script>
 </body>
 </html>
