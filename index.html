@@ -2,13 +2,15 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fanta Sposi - Anime Edition</title>
   <style>
     body {
       font-family: 'Comic Sans MS', cursive;
       margin: 0;
-      background-color: white;
+      background: linear-gradient(to bottom, #fff0f5, #ffe4e1);
       text-align: center;
+      color: #6b4c4c;
     }
 
     header {
@@ -21,23 +23,22 @@
 
     h1 {
       text-transform: uppercase;
-      font-size: 3em;
-      color: black;
-      text-shadow:
-        -1px -1px 0 #fff,
-        1px -1px 0 #fff,
-        -1px 1px 0 #fff,
-        1px 1px 0 #fff;
+      font-size: 2.8em;
+      color: #d63384;
+      text-shadow: 1px 1px 3px #ffc0cb;
       margin: 0;
       padding: 20px 10px;
+      font-family: 'Lucida Handwriting', cursive;
     }
 
     nav {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      background-color: #008080;
+      gap: 15px;
+      background-color: #ffc0cb;
       padding: 10px;
+      border-bottom: 2px dashed #f08080;
     }
 
     nav a {
@@ -47,10 +48,11 @@
       font-size: 1.1em;
       transition: color 0.3s ease;
       text-transform: uppercase;
+      font-family: 'Lucida Sans', sans-serif;
     }
 
     nav a:hover {
-      color: #ffd700;
+      color: #fff0f5;
     }
 
     .container {
@@ -63,64 +65,71 @@
       text-transform: uppercase;
       font-size: 1.8em;
       margin-bottom: 10px;
+      color: #c71585;
+      font-family: 'Lucida Handwriting', cursive;
     }
 
     section p {
       text-transform: uppercase;
-      font-size: 1.1em;
+      font-size: 1em;
+      padding: 0 10px;
+      color: #6b4c4c;
     }
 
     .team {
-      width: 180px;
-      height: 200px;
-      margin: 20px;
+      width: 150px;
+      height: 160px;
+      margin: 15px;
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
       border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0, 128, 128, 0.4);
+      box-shadow: 0 4px 15px rgba(255, 182, 193, 0.6);
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       display: inline-block;
     }
 
     .team:hover {
-      transform: scale(1.1) rotate(2deg);
-      box-shadow: 0 8px 20px rgba(0, 128, 128, 0.7);
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(255, 182, 193, 0.8);
     }
 
-    table {
-      width: 100%;
-      font-size: 1.2em;
-      margin: 30px auto 0;
+    #classifica {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #scoreTable {
+      width: 90%;
+      max-width: 600px;
       border-collapse: separate;
       border-spacing: 0;
-      border-radius: 10px;
-      overflow-x: auto;
-      display: block;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3);
+      background: #fff0f5;
     }
 
     th, td {
-      padding: 20px;
+      padding: 15px;
       text-align: center;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #f8c8dc;
       background: white;
+      text-transform: uppercase;
+      font-family: 'Lucida Sans', sans-serif;
+      font-size: 1em;
     }
 
     th {
-      background-color: #008080;
+      background-color: #f8a5c2;
       color: white;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    td {
-      text-transform: uppercase;
+      font-weight: bold;
     }
 
     tbody tr:hover {
-      background-color: #f0f8f8;
+      background-color: #ffeef4;
     }
 
     footer {
@@ -128,17 +137,13 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      height: 150px;
-      margin-top: 40px;
+      height: 120px;
+      margin-top: 30px;
     }
 
     @media screen and (max-width: 600px) {
-      table {
-        font-size: 1em;
-      }
-
-      th, td {
-        padding: 15px 10px;
+      h1 {
+        font-size: 2em;
       }
 
       nav {
@@ -147,8 +152,21 @@
       }
 
       .team {
-        width: 140px;
-        height: 160px;
+        width: 120px;
+        height: 130px;
+        margin: 10px;
+      }
+
+      section h2 {
+        font-size: 1.4em;
+      }
+
+      section p {
+        font-size: 0.95em;
+      }
+
+      th, td {
+        padding: 12px 8px;
       }
     }
   </style>
@@ -184,15 +202,17 @@
 
     <section id="classifica">
       <h2>CLASSIFICA</h2>
-      <table id="scoreTable">
-        <thead>
-          <tr>
-            <th>SQUADRA</th>
-            <th>PUNTEGGIO</th>
-          </tr>
-        </thead>
-        <tbody id="scoreBody"></tbody>
-      </table>
+      <div id="classifica">
+        <table id="scoreTable">
+          <thead>
+            <tr>
+              <th>SQUADRA</th>
+              <th>PUNTEGGIO</th>
+            </tr>
+          </thead>
+          <tbody id="scoreBody"></tbody>
+        </table>
+      </div>
     </section>
   </div>
 
