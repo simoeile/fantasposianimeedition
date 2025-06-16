@@ -2,7 +2,6 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fanta Sposi - Anime Edition</title>
   <style>
     body {
@@ -22,7 +21,7 @@
 
     h1 {
       text-transform: uppercase;
-      font-size: 2.5em;
+      font-size: 3em;
       color: black;
       text-shadow:
         -1px -1px 0 #fff,
@@ -35,9 +34,8 @@
 
     nav {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 15px;
+      gap: 20px;
       background-color: #008080;
       padding: 10px;
     }
@@ -63,24 +61,23 @@
 
     section h2 {
       text-transform: uppercase;
-      font-size: 1.6em;
+      font-size: 1.8em;
       margin-bottom: 10px;
     }
 
     section p {
       text-transform: uppercase;
-      font-size: 1em;
-      padding: 0 10px;
+      font-size: 1.1em;
     }
 
     .team {
-      width: 150px;
-      height: 160px;
-      margin: 15px;
+      width: 180px;
+      height: 200px;
+      margin: 20px;
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      border-radius: 12px;
+      border-radius: 15px;
       box-shadow: 0 4px 15px rgba(0, 128, 128, 0.4);
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -88,14 +85,14 @@
     }
 
     .team:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 18px rgba(0, 128, 128, 0.6);
+      transform: scale(1.1) rotate(2deg);
+      box-shadow: 0 8px 20px rgba(0, 128, 128, 0.7);
     }
 
-    #classifica table {
+    table {
       width: 100%;
-      margin-top: 20px;
-      font-size: 1.1em;
+      font-size: 1.2em;
+      margin: 30px auto 0;
       border-collapse: separate;
       border-spacing: 0;
       border-radius: 10px;
@@ -105,17 +102,21 @@
     }
 
     th, td {
-      padding: 15px;
+      padding: 20px;
       text-align: center;
       border-bottom: 1px solid #ddd;
       background: white;
-      text-transform: uppercase;
     }
 
     th {
       background-color: #008080;
       color: white;
       font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    td {
+      text-transform: uppercase;
     }
 
     tbody tr:hover {
@@ -127,13 +128,17 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      height: 120px;
-      margin-top: 30px;
+      height: 150px;
+      margin-top: 40px;
     }
 
     @media screen and (max-width: 600px) {
-      h1 {
-        font-size: 2em;
+      table {
+        font-size: 1em;
+      }
+
+      th, td {
+        padding: 15px 10px;
       }
 
       nav {
@@ -142,25 +147,8 @@
       }
 
       .team {
-        width: 120px;
-        height: 130px;
-        margin: 10px;
-      }
-
-      section h2 {
-        font-size: 1.3em;
-      }
-
-      section p {
-        font-size: 0.95em;
-      }
-
-      #classifica table {
-        font-size: 0.95em;
-      }
-
-      th, td {
-        padding: 12px 8px;
+        width: 140px;
+        height: 160px;
       }
     }
   </style>
